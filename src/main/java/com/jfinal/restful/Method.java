@@ -1,7 +1,5 @@
 package com.jfinal.restful;
 
-import com.jfinal.kit.StrKit;
-
 /**
  * Created by iaceob on 2017/3/15.
  */

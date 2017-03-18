@@ -1,7 +1,9 @@
-package com.jfinal.action;
+package com.jfinal.core;
 
 import com.jfinal.config.Routes;
+import com.jfinal.core.Action;
 import com.jfinal.core.Controller;
+import com.jfinal.restful.RestfulAction;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,8 +34,20 @@ public abstract class UrlMapping {
         return excludedMethodName;
     }
 
-    protected abstract String buildMsg(String actionKey, Class<? extends Controller> controllerClass, Method method);
+    protected String buildMsg(String actionKey, Class<? extends Controller> controllerClass, Method method){
+        StringBuilder sb = new StringBuilder("The action \"")
+                .append(controllerClass.getName()).append(".")
+                .append(method.getName()).append("()\" can not be mapped, ")
+                .append("actionKey \"").append(actionKey).append("\" is already in use.");
 
-    public abstract void buildActionMapping();
+        String msg = sb.toString();
+        System.err.println("\nException: " + msg);
+        return msg;
+    }
 
+    protected abstract void buildActionMapping();
+
+    protected abstract RestfulAction getAction(String url, String[] urlPara, com.jfinal.restful.Method method);
+
+    protected abstract List<String> getAllActionKeys();
 }

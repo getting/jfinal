@@ -21,17 +21,16 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.jfinal.action.UrlMapping;
 import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.InterceptorManager;
 import com.jfinal.config.Interceptors;
 import com.jfinal.config.Routes;
 import com.jfinal.config.Routes.Route;
+import com.jfinal.restful.RestfulAction;
 
 /**
  * ActionMapping
@@ -49,7 +48,7 @@ final class ActionMapping extends UrlMapping {
 		// this.interceptors = interceptors;
 	}
 
-	public void buildActionMapping() {
+	protected void buildActionMapping() {
 		mapping.clear();
 		Set<String> excludedMethodName = super.buildExcludedMethodName();
 		InterceptorManager interMan = InterceptorManager.me();
@@ -103,17 +102,6 @@ final class ActionMapping extends UrlMapping {
 		}
 	}
 
-    protected final String buildMsg(String actionKey, Class<? extends Controller> controllerClass, Method method) {
-		StringBuilder sb = new StringBuilder("The action \"")
-			.append(controllerClass.getName()).append(".")
-			.append(method.getName()).append("()\" can not be mapped, ")
-			.append("actionKey \"").append(actionKey).append("\" is already in use.");
-
-		String msg = sb.toString();
-		System.err.println("\nException: " + msg);
-		return msg;
-	}
-
 	/**
 	 * Support four types of url
 	 * 1: http://abc.com/controllerKey                 ---> 00
@@ -123,10 +111,10 @@ final class ActionMapping extends UrlMapping {
 	 * The controllerKey can also contains "/"
 	 * Example: http://abc.com/uvw/xyz/method/para
 	 */
-	Action getAction(String url, String[] urlPara) {
+	protected RestfulAction getAction(String url, String[] urlPara, com.jfinal.restful.Method method) {
 		Action action = mapping.get(url);
 		if (action != null) {
-			return action;
+			return new RestfulAction(action);
 		}
 
 		// --------
@@ -136,10 +124,10 @@ final class ActionMapping extends UrlMapping {
 			urlPara[0] = url.substring(i + 1);
 		}
 
-		return action;
+		return new RestfulAction(action);
 	}
 
-	List<String> getAllActionKeys() {
+	protected List<String> getAllActionKeys() {
 		List<String> allActionKeys = new ArrayList<String>(mapping.keySet());
 		Collections.sort(allActionKeys);
 		return allActionKeys;

@@ -18,12 +18,11 @@ package com.jfinal.config;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import com.jfinal.captcha.CaptchaManager;
 import com.jfinal.captcha.ICaptchaCache;
-import com.jfinal.core.ActionHandler;
 import com.jfinal.core.ActionReporter;
 import com.jfinal.core.Const;
-import com.jfinal.handler.Handler;
 import com.jfinal.i18n.I18n;
 import com.jfinal.json.IJsonFactory;
 import com.jfinal.json.JsonManager;
@@ -53,6 +52,8 @@ final public class Constants {
 	private int freeMarkerTemplateUpdateDelay = Const.DEFAULT_FREEMARKER_TEMPLATE_UPDATE_DELAY;	// just for not devMode
 	
 	private ITokenCache tokenCache = null;
+
+	private Boolean restful = Const.DEFAULT_STD_RESTFUL;
 	
 	/**
 	 * Set development mode.
@@ -65,7 +66,15 @@ final public class Constants {
 	public boolean getDevMode() {
 		return devMode;
 	}
-	
+
+	public Boolean getRestful() {
+		return restful;
+	}
+
+	public void setRestful(Boolean restful) {
+		this.restful = restful;
+	}
+
 	/**
 	 * Set the renderFactory
 	 */

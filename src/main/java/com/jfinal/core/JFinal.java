@@ -26,6 +26,7 @@ import com.jfinal.kit.LogKit;
 import com.jfinal.kit.PathKit;
 import com.jfinal.plugin.IPlugin;
 import com.jfinal.render.RenderManager;
+import com.jfinal.restful.Method;
 import com.jfinal.server.JettyServerForIDEA;
 import com.jfinal.server.IServer;
 import com.jfinal.server.ServerFactory;
@@ -39,7 +40,7 @@ import com.jfinal.upload.OreillyCos;
 public final class JFinal {
 	
 	private Constants constants;
-	private ActionMapping actionMapping;
+	private UrlMapping urlMapping;
 	private Handler handler;
 	private ServletContext servletContext;
 	private String contextPath = "";
@@ -80,7 +81,7 @@ public final class JFinal {
 	}
 	
 	private void initHandler() {
-		Handler actionHandler = new ActionHandler(actionMapping, constants);
+		Handler actionHandler = new ActionHandler(urlMapping, constants);
 		handler = HandlerFactory.getHandler(Config.getHandlers().getHandlerList(), actionHandler);
 	}
 	
@@ -98,8 +99,11 @@ public final class JFinal {
 	}
 	
 	private void initActionMapping() {
-		actionMapping = new ActionMapping(Config.getRoutes(), Config.getInterceptors());
-		actionMapping.buildActionMapping();
+		if (this.constants.getRestful())
+			urlMapping = new RestfulMapping(Config.getRoutes());
+		else
+			urlMapping = new ActionMapping(Config.getRoutes(), Config.getInterceptors());
+		this.urlMapping.buildActionMapping();
 		Config.getRoutes().clear();
 	}
 	
@@ -138,12 +142,12 @@ public final class JFinal {
 		return this.servletContext;
 	}
 	
-	public Action getAction(String url, String[] urlPara) {
-		return actionMapping.getAction(url, urlPara);
+	public Action getAction(String url, String[] urlPara, Method method) {
+		return urlMapping.getAction(url, urlPara, method).getAction();
 	}
 	
 	public List<String> getAllActionKeys() {
-		return actionMapping.getAllActionKeys();
+		return urlMapping.getAllActionKeys();
 	}
 	
 	public static void start() {

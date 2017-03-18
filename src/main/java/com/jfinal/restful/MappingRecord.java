@@ -10,6 +10,8 @@ public class MappingRecord {
     private String uri;
     private Method method;
     private Action action;
+    private String regex;
+    private String[] parakeys;
 
     public String getUri() {
         return uri;
@@ -33,6 +35,22 @@ public class MappingRecord {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    public String getRegex() {
+        return regex;
+    }
+
+    public void setRegex(String regex) {
+        this.regex = regex;
+    }
+
+    public String[] getParakeys() {
+        return parakeys;
+    }
+
+    public void setParakeys(String[] parakeys) {
+        this.parakeys = parakeys;
     }
 
     @Override
