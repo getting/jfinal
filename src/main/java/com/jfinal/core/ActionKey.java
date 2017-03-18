@@ -16,6 +16,8 @@
 
 package com.jfinal.core;
 
+import com.jfinal.restful.Method;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -30,5 +32,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ActionKey {
 	String value();
+	Method method() default Method.GET;
 }
 

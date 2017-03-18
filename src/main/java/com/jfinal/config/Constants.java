@@ -51,7 +51,9 @@ final public class Constants {
 	private int freeMarkerTemplateUpdateDelay = Const.DEFAULT_FREEMARKER_TEMPLATE_UPDATE_DELAY;	// just for not devMode
 	
 	private ITokenCache tokenCache = null;
-	
+
+	private Boolean restful = Const.DEFAULT_STD_RESTFUL;
+
 	/**
 	 * Set development mode.
 	 * @param devMode the development mode
@@ -63,7 +65,15 @@ final public class Constants {
 	public boolean getDevMode() {
 		return devMode;
 	}
-	
+
+	public Boolean getRestful() {
+		return restful;
+	}
+
+	public void setRestful(Boolean restful) {
+		this.restful = restful;
+	}
+
 	/**
 	 * Set the renderFactory
 	 */

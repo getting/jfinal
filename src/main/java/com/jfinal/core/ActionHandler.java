@@ -21,10 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.jfinal.config.Constants;
 import com.jfinal.aop.Invocation;
 import com.jfinal.handler.Handler;
+import com.jfinal.kit.StrKit;
 import com.jfinal.log.Log;
 import com.jfinal.render.Render;
 import com.jfinal.render.RenderException;
 import com.jfinal.render.RenderManager;
+import com.jfinal.restful.Method;
+import com.jfinal.restful.RestfulAction;
 
 /**
  * ActionHandler
@@ -40,7 +43,14 @@ public class ActionHandler extends Handler {
 		this.actionMapping = actionMapping;
 		this.devMode = constants.getDevMode();
 	}
-	
+
+	private Method getMethod(HttpServletRequest request) {
+		String httpMethod = request.getMethod();
+		if (StrKit.isBlank(httpMethod))
+			throw new RuntimeException("Method can not be null.");
+		return Method.valueOf(httpMethod.toUpperCase());
+	}
+
 	/**
 	 * handle
 	 * 1: Action action = actionMapping.getAction(target)
@@ -54,9 +64,9 @@ public class ActionHandler extends Handler {
 		
 		isHandled[0] = true;
 		String[] urlPara = {null};
-		Action action = actionMapping.getAction(target, urlPara);
-		
-		if (action == null) {
+		RestfulAction restfulAction = actionMapping.getAction(target, urlPara, this.getMethod(request));
+
+		if (restfulAction == null || restfulAction.getAction() == null) {
 			if (log.isWarnEnabled()) {
 				String qs = request.getQueryString();
 				log.warn("404 Action Not Found: " + (qs == null ? target : target + "?" + qs));
@@ -64,6 +74,14 @@ public class ActionHandler extends Handler {
 			renderManager.getRenderFactory().getErrorRender(404).setContext(request, response).render();
 			return ;
 		}
+
+		if (restfulAction.getParas() != null) {
+			for (String key : restfulAction.getParas().keySet()) {
+				request.setAttribute(key, restfulAction.getParas().get(key));
+			}
+		}
+
+		Action action = restfulAction.getAction();
 		
 		try {
 			Controller controller = action.getControllerClass().newInstance();
@@ -135,6 +153,8 @@ public class ActionHandler extends Handler {
 				log.error(qs == null ? target : target + "?" + qs, e);
 			}
 			renderManager.getRenderFactory().getErrorRender(500).setContext(request, response, action.getViewPath()).render();
+		} finally {
+			restfulAction.clear();
 		}
 	}
 }

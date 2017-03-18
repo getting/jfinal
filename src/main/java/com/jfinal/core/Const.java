@@ -34,6 +34,8 @@ public interface Const {
 	String DEFAULT_ENCODING = "UTF-8";
 	
 	boolean DEFAULT_DEV_MODE = false;
+
+	boolean DEFAULT_STD_RESTFUL = false;
 	
 	String DEFAULT_URL_PARA_SEPARATOR = "-";
 	

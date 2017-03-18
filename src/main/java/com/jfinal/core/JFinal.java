@@ -26,6 +26,8 @@ import com.jfinal.kit.LogKit;
 import com.jfinal.kit.PathKit;
 import com.jfinal.plugin.IPlugin;
 import com.jfinal.render.RenderManager;
+import com.jfinal.restful.Method;
+import com.jfinal.restful.RestfulAction;
 import com.jfinal.server.JettyServerForIDEA;
 import com.jfinal.server.IServer;
 import com.jfinal.server.ServerFactory;
@@ -98,7 +100,7 @@ public final class JFinal {
 	}
 	
 	private void initActionMapping() {
-		actionMapping = new ActionMapping(Config.getRoutes(), Config.getInterceptors());
+		actionMapping = new ActionMapping(Config.getRoutes(), Config.getInterceptors(), Config.getConstants().getRestful());
 		actionMapping.buildActionMapping();
 		Config.getRoutes().clear();
 	}
@@ -138,8 +140,9 @@ public final class JFinal {
 		return this.servletContext;
 	}
 	
-	public Action getAction(String url, String[] urlPara) {
-		return actionMapping.getAction(url, urlPara);
+	public Action getAction(String url, String[] urlPara, Method method) {
+		RestfulAction restfulAction = actionMapping.getAction(url, urlPara, method);
+		return restfulAction == null ? null : restfulAction.getAction();
 	}
 	
 	public List<String> getAllActionKeys() {
