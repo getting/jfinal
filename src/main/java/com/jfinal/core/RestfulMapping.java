@@ -116,6 +116,16 @@ final class RestfulMapping extends UrlMapping {
                 }
             }
         }
+        routes.clear();
+
+        // support url = controllerKey + urlParas with "/" of controllerKey
+        RestfulAction restfulAction = this.getAction("/", new String[]{null}, com.jfinal.restful.Method.GET);
+        if (restfulAction != null) {
+            MappingRecord mapping = new MappingRecord();
+            mapping.setUri("");
+            mapping.setAction(restfulAction.getAction());
+            this.mappings.add(mapping);
+        }
     }
 
     private void fillMapping(MappingRecord record, String actionKey, Class<? extends Controller> controllerClass, Method method) {
