@@ -34,12 +34,12 @@ import com.jfinal.restful.RestfulAction;
  * ActionHandler
  */
 public class ActionHandler extends Handler {
-	
+
 	private final boolean devMode;
 	private final UrlMapping urlMapping;
 	private static final RenderManager renderManager = RenderManager.me();
 	private static final Log log = Log.getLog(ActionHandler.class);
-	
+
 	public ActionHandler(UrlMapping urlMapping, Constants constants) {
 		this.urlMapping = urlMapping;
 		this.devMode = constants.getDevMode();
@@ -62,12 +62,12 @@ public class ActionHandler extends Handler {
 		if (target.indexOf('.') != -1) {
 			return ;
 		}
-		
+
 		isHandled[0] = true;
 		String[] urlPara = {null};
 		RestfulAction ret = this.urlMapping.getAction(target, urlPara, this.getMethod(request));
 
-		if (ret == null) {
+		if (ret == null || ret.getAction() == null) {
 			if (log.isWarnEnabled()) {
 				String qs = request.getQueryString();
 				log.warn("404 Action Not Found: " + (qs == null ? target : target + "?" + qs));
@@ -86,7 +86,7 @@ public class ActionHandler extends Handler {
 		try {
 			Controller controller = action.getControllerClass().newInstance();
 			controller.init(request, response, urlPara[0]);
-			
+
 			if (devMode) {
 				if (ActionReporter.isReportAfterInvocation(request)) {
 					new Invocation(action, controller).invoke();
@@ -99,7 +99,7 @@ public class ActionHandler extends Handler {
 			else {
 				new Invocation(action, controller).invoke();
 			}
-			
+
 			Render render = controller.getRender();
 			if (render instanceof ForwardActionRender) {
 				String actionUrl = ((ForwardActionRender)render).getActionUrl();
@@ -110,7 +110,7 @@ public class ActionHandler extends Handler {
 				}
 				return ;
 			}
-			
+
 			if (render == null) {
 				render = renderManager.getRenderFactory().getDefaultRender(action.getViewPath() + action.getMethodName());
 			}
@@ -132,7 +132,7 @@ public class ActionHandler extends Handler {
 			} else if (errorCode == 403) {
 				msg = "403 Forbidden: ";
 			}
-			
+
 			if (msg != null) {
 				if (log.isWarnEnabled()) {
 					String qs = request.getQueryString();
@@ -144,7 +144,7 @@ public class ActionHandler extends Handler {
 					log.error(qs == null ? target : target + "?" + qs, e);
 				}
 			}
-			
+
 			e.getErrorRender().setContext(request, response, action.getViewPath()).render();
 		}
 		catch (Exception e) {

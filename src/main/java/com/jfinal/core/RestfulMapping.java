@@ -221,6 +221,7 @@ final class RestfulMapping extends UrlMapping {
         List<String> rets = new ArrayList<String>();
         for (MappingRecord mapping : this.mappings)
             rets.add(mapping.getUri());
+        Collections.sort(rets);
         return rets;
     }
 
