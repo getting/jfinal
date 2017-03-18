@@ -21,7 +21,7 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 
 /**
- * Accept GET method only.
+ * Accept PATCH method only.
  */
 public class PATCH implements Interceptor {
 	public void intercept(Invocation inv) {

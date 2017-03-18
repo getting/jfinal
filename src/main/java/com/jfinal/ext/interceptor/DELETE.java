@@ -21,7 +21,7 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 
 /**
- * Accept GET method only.
+ * Accept DELETE method only.
  */
 public class DELETE implements Interceptor {
 	public void intercept(Invocation inv) {

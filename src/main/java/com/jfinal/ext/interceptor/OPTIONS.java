@@ -21,7 +21,7 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 
 /**
- * Accept GET method only.
+ * Accept OPTIONS method only.
  */
 public class OPTIONS implements Interceptor {
 	public void intercept(Invocation inv) {

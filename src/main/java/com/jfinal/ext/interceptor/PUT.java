@@ -21,7 +21,7 @@ import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 
 /**
- * Accept GET method only.
+ * Accept PUT method only.
  */
 public class PUT implements Interceptor {
 	public void intercept(Invocation inv) {
